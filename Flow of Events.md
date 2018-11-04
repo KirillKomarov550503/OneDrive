@@ -67,5 +67,5 @@
    1.1 Выбрать параметры статистики.
    1.2 Нажать кнопку "Получить статистику" .
    1.3 После нажатия кнопки сервер пришлет данные статистики.
-   
+![Statistics](https://github.com/KirillKomarov550503/OneDrive/blob/master/Diagrams/Activity/statistics.png)
 
