@@ -29,17 +29,17 @@ public class Person {
 
   @OneToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "credential_id")
-  private Credentials credentials;
+  private Credential credential;
 
   public Person() {
   }
 
-  public Credentials getCredentials() {
-    return credentials;
+  public Credential getCredential() {
+    return credential;
   }
 
-  public void setCredentials(Credentials credentials) {
-    this.credentials = credentials;
+  public void setCredential(Credential credential) {
+    this.credential = credential;
   }
 
   public long getId() {
@@ -86,11 +86,11 @@ public class Person {
     return Objects.equals(name, person.name) &&
         Objects.equals(surname, person.surname) &&
         role == person.role &&
-        Objects.equals(credentials, person.credentials);
+        Objects.equals(credential, person.credential);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, surname, role, credentials);
+    return Objects.hash(name, surname, role, credential);
   }
 }

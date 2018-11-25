@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
 @Entity
-public class Credentials {
+public class Credential {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,7 +26,7 @@ public class Credentials {
   @OneToOne(mappedBy = "credentials", cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
   private Person person;
 
-  public Credentials() {
+  public Credential() {
   }
 
   public Person getPerson() {
@@ -69,7 +69,7 @@ public class Credentials {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    Credentials that = (Credentials) o;
+    Credential that = (Credential) o;
     return Objects.equals(email, that.email) &&
         Objects.equals(password, that.password);
   }
@@ -81,7 +81,7 @@ public class Credentials {
 
   @Override
   public String toString() {
-    return "Credentials{" +
+    return "Credential{" +
         "id=" + id +
         ", email='" + email + '\'' +
         ", password='" + password + '\'' +
