@@ -1,16 +1,16 @@
 package com.komarov.onedrive.dao.entity;
 
+import java.util.Date;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class Person {
@@ -27,20 +27,13 @@ public class Person {
   @Enumerated(value = EnumType.STRING)
   private Role role;
 
-  @OneToOne(fetch = FetchType.LAZY)
-  @JoinColumn(name = "credential_id")
-  private Credential credential;
+  @Column
+  private String email;
+  @Column
+  private String password;
 
-  public Person() {
-  }
-
-  public Credential getCredential() {
-    return credential;
-  }
-
-  public void setCredential(Credential credential) {
-    this.credential = credential;
-  }
+  @Temporal(TemporalType.DATE)
+  private Date date;
 
   public long getId() {
     return id;
@@ -74,6 +67,30 @@ public class Person {
     this.role = role;
   }
 
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -83,14 +100,30 @@ public class Person {
       return false;
     }
     Person person = (Person) o;
-    return Objects.equals(name, person.name) &&
+    return id == person.id &&
+        Objects.equals(name, person.name) &&
         Objects.equals(surname, person.surname) &&
         role == person.role &&
-        Objects.equals(credential, person.credential);
+        Objects.equals(email, person.email) &&
+        Objects.equals(password, person.password) &&
+        Objects.equals(date, person.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(name, surname, role, credential);
+    return Objects.hash(id, name, surname, role, email, password, date);
+  }
+
+  @Override
+  public String toString() {
+    return "Person{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", surname='" + surname + '\'' +
+        ", role=" + role +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", date=" + date +
+        '}';
   }
 }
