@@ -18,7 +18,7 @@ public class Validation {
     Matcher surnameMatcher = pattern.matcher(surname);
     if (!nameMatcher.matches() || !surnameMatcher.matches()) {
       String error = "Wrong input format of name or surname";
-      LOG.debug(error);
+      LOG.info(error);
       throw new LogicException(error);
     }
   }

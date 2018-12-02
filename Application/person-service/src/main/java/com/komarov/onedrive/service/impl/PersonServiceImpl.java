@@ -2,7 +2,6 @@ package com.komarov.onedrive.service.impl;
 
 import com.komarov.onedrive.dao.entity.Person;
 import com.komarov.onedrive.dao.entity.Role;
-import com.komarov.onedrive.dao.repository.CredentialRepository;
 import com.komarov.onedrive.dao.repository.PersonRepository;
 import com.komarov.onedrive.service.PersonService;
 import com.komarov.onedrive.service.dto.converter.impl.PersonConverter;
@@ -10,6 +9,8 @@ import com.komarov.onedrive.service.dto.entity.PersonDTO;
 import com.komarov.onedrive.service.exception.LogicException;
 import com.komarov.onedrive.service.exception.NotFoundException;
 import com.komarov.onedrive.service.utils.Validation;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,16 +30,13 @@ public class PersonServiceImpl implements PersonService {
   private final PersonRepository personRepository;
   private final PersonConverter personConverter;
   private final BCryptPasswordEncoder passwordEncoder;
-  private final CredentialRepository credentialRepository;
 
   @Autowired
   public PersonServiceImpl(PersonRepository personRepository,
-      PersonConverter personConverter, BCryptPasswordEncoder passwordEncoder,
-      CredentialRepository credentialRepository) {
+      PersonConverter personConverter, BCryptPasswordEncoder passwordEncoder) {
     this.personRepository = personRepository;
     this.personConverter = personConverter;
     this.passwordEncoder = passwordEncoder;
-    this.credentialRepository = credentialRepository;
   }
 
   private List<PersonDTO> convertPersonListToDtoList(List<Person> persons) {
@@ -52,14 +50,15 @@ public class PersonServiceImpl implements PersonService {
   public PersonDTO register(PersonDTO personDTO, Role role) throws LogicException {
     Validation.validateNameAndSurname(personDTO.getName(), personDTO.getSurname());
     Person person = personConverter.convertToEntity(personDTO);
-    if (credentialRepository.findCredentialByEMail(personDTO.getCredential().getEmail()) != null) {
+    if (personRepository.findPersonByEmail(personDTO.getEmail()) != null) {
       String error = "User with this email already exist";
-      LOG.debug(error);
+      LOG.info(error);
       throw new LogicException(error);
     }
-    String password = "Ofjrmnc " + passwordEncoder.encode(person.getCredential().getPassword());
-    person.getCredential().setPassword(password);
+    String password = passwordEncoder.encode(person.getPassword());
+    person.setPassword(password);
     person.setRole(role);
+    person.setDate(new Date());
     LOG.info("Add new person: " + personDTO);
     return personConverter.convertToDTO(personRepository.save(person));
   }
@@ -71,14 +70,14 @@ public class PersonServiceImpl implements PersonService {
     Optional<Person> dbPerson = personRepository.findById(personDTO.getId());
     if (!dbPerson.isPresent()) {
       String error = "Not found person with ID: " + personDTO.getId();
-      LOG.debug(error);
+      LOG.info(error);
       throw new LogicException(error);
     }
     Person person = dbPerson.get();
     person.setName(personDTO.getName());
     person.setSurname(personDTO.getSurname());
-    String password = "Ofjrmnc " + passwordEncoder.encode(person.getCredential().getPassword());
-    person.getCredential().setPassword(password);
+    String password = passwordEncoder.encode(person.getPassword());
+    person.setPassword(password);
     LOG.info("Update person: " + personDTO);
     return personConverter.convertToDTO(personRepository.save(person));
   }
@@ -88,7 +87,7 @@ public class PersonServiceImpl implements PersonService {
     Optional<Person> dbPerson = personRepository.findById(id);
     if (!dbPerson.isPresent()) {
       String error = "Not found person with ID: " + id;
-      LOG.debug(error);
+      LOG.info(error);
       throw new LogicException(error);
     }
     LOG.info("Select person by id: " + id);
@@ -106,11 +105,17 @@ public class PersonServiceImpl implements PersonService {
     Optional<Person> dbPerson = personRepository.findById(id);
     if (!dbPerson.isPresent()) {
       String error = "Not exist person with ID: " + id;
-      LOG.debug(error);
+      LOG.info(error);
       throw new LogicException(error);
     }
     LOG.info("Delete person by id: " + id);
     personRepository.deleteById(id);
     return new ResponseEntity(HttpStatus.OK);
+  }
+
+  @Override
+  public List<PersonDTO> findPeopleByDateBetweenEarlyAndLater(Date early, Date later) {
+    return convertPersonListToDtoList(
+        personRepository.findPeopleByDateBetweenEarlyAndLater(early, later));
   }
 }

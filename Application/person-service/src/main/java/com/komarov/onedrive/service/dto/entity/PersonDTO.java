@@ -1,17 +1,30 @@
 package com.komarov.onedrive.service.dto.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.komarov.onedrive.dao.entity.Credential;
+import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 @JsonInclude(Include.NON_NULL)
 public class PersonDTO implements Serializable {
+
+  @ApiModelProperty(position = 1, readOnly = true, hidden = true)
   private long id;
+  @ApiModelProperty(position = 2)
   private String name;
+  @ApiModelProperty(position = 3)
   private String surname;
-  private Credential credential;
+  @ApiModelProperty(position = 4)
+  private String email;
+
+  @ApiModelProperty(position = 5)
+  private String password;
+
+  @ApiModelProperty(position = 6, readOnly = true, hidden = true)
+  private Date date;
 
   public PersonDTO() {
   }
@@ -22,20 +35,12 @@ public class PersonDTO implements Serializable {
     this.surname = surname;
   }
 
-  public PersonDTO(long id, String name, String surname,
-      Credential credential) {
+  public PersonDTO(long id, String name, String surname, String email, Date date) {
     this.id = id;
     this.name = name;
     this.surname = surname;
-    this.credential = credential;
-  }
-
-  public Credential getCredential() {
-    return credential;
-  }
-
-  public void setCredential(Credential credential) {
-    this.credential = credential;
+    this.email = email;
+    this.date = date;
   }
 
   public long getId() {
@@ -62,6 +67,30 @@ public class PersonDTO implements Serializable {
     this.surname = surname;
   }
 
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  public void setPassword(String password) {
+    this.password = password;
+  }
+
+  public Date getDate() {
+    return date;
+  }
+
+  public void setDate(Date date) {
+    this.date = date;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -74,12 +103,14 @@ public class PersonDTO implements Serializable {
     return id == personDTO.id &&
         Objects.equals(name, personDTO.name) &&
         Objects.equals(surname, personDTO.surname) &&
-        Objects.equals(credential, personDTO.credential);
+        Objects.equals(email, personDTO.email) &&
+        Objects.equals(password, personDTO.password) &&
+        Objects.equals(date, personDTO.date);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, surname, credential);
+    return Objects.hash(id, name, surname, email, password, date);
   }
 
   @Override
@@ -88,7 +119,9 @@ public class PersonDTO implements Serializable {
         "id=" + id +
         ", name='" + name + '\'' +
         ", surname='" + surname + '\'' +
-        ", credential=" + credential +
+        ", email='" + email + '\'' +
+        ", password='" + password + '\'' +
+        ", date=" + date +
         '}';
   }
 }

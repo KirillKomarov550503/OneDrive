@@ -14,12 +14,14 @@ public class PersonConverter implements Converter<PersonDTO, Person> {
     person.setId(dto.getId());
     person.setName(dto.getName());
     person.setSurname(dto.getSurname());
-    person.setCredential(dto.getCredential());
+    person.setEmail(dto.getEmail());
+    person.setPassword(dto.getPassword());
     return person;
   }
 
   @Override
   public PersonDTO convertToDTO(Person person) {
-    return new PersonDTO(person.getId(), person.getName(), person.getSurname(), person.getCredential());
+    return new PersonDTO(person.getId(), person.getName(), person.getSurname(),
+        person.getEmail(), person.getDate());
   }
 }
