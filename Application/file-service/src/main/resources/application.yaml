@@ -1,0 +1,27 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://192.168.99.100:32769/postgres
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: postgres
+    platform: POSTGRESQL
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+  application:
+    name: file-service
+
+management:
+  health:
+    mongo:
+      enabled: false
+
+server:
+  port: 8081
+
