@@ -12,10 +12,10 @@ public class CustomExceptionAdapter {
 
   @ExceptionHandler(LogicException.class)
   public ResponseEntity getLogicException(LogicException e) {
-    return new ResponseEntity(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
   }
   @ExceptionHandler(NotFoundException.class)
   public ResponseEntity getNotFoundException(NotFoundException e){
-    return new ResponseEntity(e.getMessage(), HttpStatus.NOT_FOUND);
+    return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
   }
 }

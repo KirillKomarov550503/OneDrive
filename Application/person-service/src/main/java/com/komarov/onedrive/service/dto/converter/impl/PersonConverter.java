@@ -21,7 +21,9 @@ public class PersonConverter implements Converter<PersonDTO, Person> {
 
   @Override
   public PersonDTO convertToDTO(Person person) {
-    return new PersonDTO(person.getId(), person.getName(), person.getSurname(),
+    PersonDTO dto = new PersonDTO(person.getId(), person.getName(), person.getSurname(),
         person.getEmail(), person.getDate());
+    dto.setRole(person.getRole());
+    return dto;
   }
 }

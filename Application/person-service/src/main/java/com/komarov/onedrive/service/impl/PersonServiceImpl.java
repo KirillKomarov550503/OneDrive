@@ -110,12 +110,25 @@ public class PersonServiceImpl implements PersonService {
     }
     LOG.info("Delete person by id: " + id);
     personRepository.deleteById(id);
-    return new ResponseEntity(HttpStatus.OK);
+    return ResponseEntity.ok().build();
   }
 
   @Override
   public List<PersonDTO> findPeopleByDateBetweenEarlyAndLater(Date early, Date later) {
     return convertPersonListToDtoList(
         personRepository.findPeopleByDateBetweenEarlyAndLater(early, later));
+  }
+
+  @Override
+  public PersonDTO findByEmail(String email) {
+    Person person = personRepository.findPersonByEmail(email);
+    if(person == null){
+      String message = String.format("Person with email %s not found", email);
+      LOG.error(message);
+      throw new NotFoundException(message);
+    }
+    PersonDTO dto = personConverter.convertToDTO(person);
+    dto.setPassword(person.getPassword());
+    return dto;
   }
 }

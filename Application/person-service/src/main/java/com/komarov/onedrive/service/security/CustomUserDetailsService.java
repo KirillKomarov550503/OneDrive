@@ -32,8 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     if (person != null) {
       customUser = new CustomUser(person.getEmail(),
           person.getPassword(),
-          Collections
-              .singleton(new SimpleGrantedAuthority(person.getRole().name())),
+          Collections.singleton(new SimpleGrantedAuthority(person.getRole().name())),
           person.getId());
     }
     return customUser;

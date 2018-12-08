@@ -22,4 +22,6 @@ public interface PersonService {
   ResponseEntity delete(long id) throws NotFoundException;
 
   List<PersonDTO> findPeopleByDateBetweenEarlyAndLater(Date early, Date later);
+
+  PersonDTO findByEmail(String email);
 }

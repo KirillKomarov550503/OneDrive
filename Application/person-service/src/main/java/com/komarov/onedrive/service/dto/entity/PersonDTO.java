@@ -3,6 +3,7 @@ package com.komarov.onedrive.service.dto.entity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.komarov.onedrive.dao.entity.Role;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
@@ -19,6 +20,8 @@ public class PersonDTO implements Serializable {
   private String surname;
   @ApiModelProperty(position = 4)
   private String email;
+
+  private Role role;
 
   @ApiModelProperty(position = 5)
   private String password;
@@ -49,6 +52,14 @@ public class PersonDTO implements Serializable {
 
   public void setId(long id) {
     this.id = id;
+  }
+
+  public Role getRole() {
+    return role;
+  }
+
+  public void setRole(Role role) {
+    this.role = role;
   }
 
   public String getName() {
