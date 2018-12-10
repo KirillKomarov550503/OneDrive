@@ -57,13 +57,6 @@ public class FileController {
         new DownloadFile(fileEntity.getName(), fileEntity.getFile(), fileEntity.getFileType()));
   }
 
-//  @PostMapping("/single_file")
-//  public ResponseEntity<FileEntityDTO> addSingleFile(@RequestBody FileEntityDTO dto, @RequestBody byte[] body,
-//      @RequestParam(name = "personId") long personId) {
-//    LOG.info("Add single file with name {} and person ID {}", dto.getFileName(), personId);
-//    return ResponseEntity.ok(fileEntityService.addFile(file, personId));
-//  }
-
   @GetMapping("/files")
   public ResponseEntity<List<FileEntityDTO>> findFile(
       @RequestParam(name = "personId", required = false) Long personId) {
@@ -82,4 +75,23 @@ public class FileController {
     fileEntityService.deleteFileById(fileId, personId);
   }
 
+  @GetMapping("/statistics/files/average")
+  public ResponseEntity<Double> getAverageSize(@RequestParam(name = "personId", required = false) Long personId) {
+    LOG.info("Get average Size");
+    if (personId == null) {
+      return ResponseEntity.ok().body(fileEntityService.findAverageFileSize());
+    } else {
+      return ResponseEntity.ok().body(fileEntityService.findAverageFileSizeByPersonId(personId));
+    }
+  }
+
+  @GetMapping("/statistics/files/general")
+  public ResponseEntity<Long> getGeneralSize(@RequestParam(name = "personId", required = false) Long personId) {
+    LOG.info("Get general size");
+    if (personId == null) {
+      return ResponseEntity.ok().body(fileEntityService.findGeneralFileSizeSum());
+    } else {
+      return ResponseEntity.ok().body(fileEntityService.findGeneralFileSizeSumByPersonId(personId));
+    }
+  }
 }

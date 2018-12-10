@@ -96,12 +96,6 @@ public class FileEntityServiceImpl implements FileEntityService {
     fileEntityRepository.deleteById(id);
   }
 
-  @Override
-  public double calculateAverageSizeOfFiles() {
-    List<FileEntity> files = fileEntityRepository.findAll();
-    return files.stream().mapToLong(FileEntity::getSize).average().orElse(0);
-  }
-
   @Transactional
   @Override
   public List<FileEntityDTO> findFilesByPersonId(long personId) {
@@ -112,5 +106,29 @@ public class FileEntityServiceImpl implements FileEntityService {
   @Override
   public List<FileEntityDTO> findAllFiles() {
     return convertEntityListToDtoList(fileEntityRepository.findAll());
+  }
+
+  @Override
+  public double findAverageFileSize() {
+    LOG.info("Calculate average files size");
+    return fileEntityRepository.findAverageFileSize();
+  }
+
+  @Override
+  public double findAverageFileSizeByPersonId(long personId) {
+    LOG.info("Calculate average files size for person with ID {}", personId);
+    return fileEntityRepository.findAverageFileSizeByPersonId(personId);
+  }
+
+  @Override
+  public long findGeneralFileSizeSum() {
+    LOG.info("Calculate general files size");
+    return fileEntityRepository.findGeneralFileSizeSum();
+  }
+
+  @Override
+  public long findGeneralFileSizeSumByPersonId(long personId) {
+    LOG.info("Calculate general files size for person with ID {}", personId);
+    return fileEntityRepository.findGeneralFileSizeSumByPersonId(personId);
   }
 }

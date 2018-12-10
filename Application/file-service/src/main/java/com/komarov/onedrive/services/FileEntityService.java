@@ -2,7 +2,6 @@ package com.komarov.onedrive.services;
 
 import com.komarov.onedrive.dao.entity.FileEntity;
 import com.komarov.onedrive.services.dto.entity.FileEntityDTO;
-import com.komarov.onedrive.services.exception.NotFoundException;
 import java.util.List;
 
 public interface FileEntityService {
@@ -15,7 +14,13 @@ public interface FileEntityService {
 
   void deleteFileById(long id, long personId);
 
-  double calculateAverageSizeOfFiles();
+  double findAverageFileSize();
+
+  double findAverageFileSizeByPersonId(long personId);
+
+  long findGeneralFileSizeSum();
+
+  long findGeneralFileSizeSumByPersonId(long personId);
 
   List<FileEntityDTO> findAllFiles();
 
