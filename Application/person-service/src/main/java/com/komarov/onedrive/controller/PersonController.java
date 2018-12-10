@@ -39,7 +39,7 @@ public class PersonController {
   }
 
 
-  @PostMapping(value = "/save")
+  @PostMapping(value = "/registration")
   public ResponseEntity<PersonDTO> savePerson(@RequestBody PersonDTO personDTO) {
     return ResponseEntity.status(HttpStatus.CREATED)
         .body(personService.register(personDTO, Role.USER));
