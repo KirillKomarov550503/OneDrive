@@ -15,7 +15,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @Configuration
 @ComponentScan("com.komarov.onedrive")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+  private static final String PREFIX = "/one-drive";
   @Autowired
   @Qualifier("customUserDetails")
   private UserDetailsService userDetailsService;
@@ -33,8 +33,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
         .authorizeRequests()
-        .antMatchers("/users/**").hasAnyAuthority("USER")
-        .antMatchers("/registration").anonymous()
+        .antMatchers(PREFIX + "/users/**").hasAnyAuthority("USER")
+        .antMatchers(PREFIX + "/statistics/**").hasAuthority("ADMIN")
+        .antMatchers(PREFIX + "/registration").anonymous()
         .and()
         .httpBasic()
         .and()

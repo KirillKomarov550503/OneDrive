@@ -3,6 +3,7 @@ package com.komarov.onedrive.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.komarov.onedrive.security.Role;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.util.Date;
@@ -20,6 +21,7 @@ public class PersonDTO implements Serializable {
   @ApiModelProperty(position = 4)
   private String email;
 
+  @ApiModelProperty(position = 1, readOnly = true, hidden = true)
   private Role role;
 
   @ApiModelProperty(position = 5)

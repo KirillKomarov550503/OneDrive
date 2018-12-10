@@ -28,7 +28,7 @@ public class CustomUserDetails implements UserDetailsService {
   public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
     ResponseEntity<PersonDTO> responseEntity = personClient.findPersonByEmail(email);
     PersonDTO person = responseEntity.getBody();
-    LOG.info("Load person by email: " + person);
+    LOG.info("Load person by email: " + email);
     CustomUser customUser = null;
     if (person != null) {
       customUser = new CustomUser(person.getEmail(),

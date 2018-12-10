@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient("person-service")
+@FeignClient(name = "person-service")
 public interface PersonClient {
 
-  @PutMapping("/users/{userId}")
+  @PutMapping(value = "/users/{userId}")
   ResponseEntity<PersonDTO> updatePerson(@RequestBody PersonDTO personDTO,
       @PathVariable("userId") long userId);
 
@@ -24,17 +24,17 @@ public interface PersonClient {
   @PostMapping(value = "/registration")
   ResponseEntity<PersonDTO> savePerson(@RequestBody PersonDTO personDTO);
 
-  @GetMapping("/users/{userId}")
+  @GetMapping(value = "/users/{userId}")
   ResponseEntity<PersonDTO> getPerson(@PathVariable long userId);
 
-  @GetMapping("/statistics/people")
+  @GetMapping(value = "/statistics/people")
   ResponseEntity<List<PersonDTO>> getAllPeople();
 
-  @GetMapping("/users")
+  @GetMapping(value = "/users")
   ResponseEntity<PersonDTO> findPersonByEmail(
       @RequestParam(name = "email", defaultValue = "") String email);
 
-  @GetMapping("/statistics/people/date")
+  @GetMapping(value = "/statistics/people/date")
   ResponseEntity<List<PersonDTO>> getPeopleByTimeRegistrationBorder(
       @DateTimeFormat(pattern = "yyyy-MM-dd")
       @RequestParam(name = "early") Date early,

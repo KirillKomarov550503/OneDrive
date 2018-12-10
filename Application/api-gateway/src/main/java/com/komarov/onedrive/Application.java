@@ -7,7 +7,7 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 
 @SpringBootApplication(scanBasePackages = "com.komarov.onedrive")
 @EnableEurekaClient
-@EnableFeignClients("com.komarov.onedrive.feign")
+@EnableFeignClients(basePackages = "com.komarov.onedrive.feign")
 public class Application {
 
   public static void main(String[] args) {
