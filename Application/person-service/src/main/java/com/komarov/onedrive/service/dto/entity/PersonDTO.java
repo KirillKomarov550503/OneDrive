@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
-@JsonInclude(Include.NON_NULL)
 public class PersonDTO implements Serializable {
 
   @ApiModelProperty(position = 1, readOnly = true, hidden = true)

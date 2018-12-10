@@ -11,6 +11,6 @@ import org.springframework.stereotype.Repository;
 public interface PersonRepository extends JpaRepository<Person, Long> {
   Person findPersonByEmail(String email);
 
-  @Query("select p from Person p where p.date between :early and :later ")
+  @Query("select p from Person p where p.date >= :early and p.date <= :later ")
   List<Person> findPeopleByDateBetweenEarlyAndLater(Date early, Date later);
 }

@@ -3,12 +3,12 @@ package com.komarov.onedrive.controller;
 import com.komarov.onedrive.dao.entity.Role;
 import com.komarov.onedrive.service.PersonService;
 import com.komarov.onedrive.service.dto.entity.PersonDTO;
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,14 +58,18 @@ public class PersonController {
 
   @GetMapping("/statistics/people")
   public ResponseEntity<List<PersonDTO>> getAllPeople() {
+    System.err.println("Get all PEople");
     return ResponseEntity.ok(personService.findAll());
   }
 
   @GetMapping("/statistics/people/date")
   public ResponseEntity<List<PersonDTO>> getPeopleByTimeRegistrationBorder(
-      @DateTimeFormat(pattern = "yyyy-MM-dd")
-      @RequestParam(name = "early") Date early,
-      @DateTimeFormat(pattern = "yyyy-MM-dd") @RequestParam(name = "later") Date later) {
-    return ResponseEntity.ok(personService.findPeopleByDateBetweenEarlyAndLater(early, later));
+      @RequestParam(name = "early") String early,
+      @RequestParam(name = "later") String later) throws ParseException {
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    System.err.println("GetPeopleByTimeRegistrationBorder");
+    return ResponseEntity.ok(personService
+        .findPeopleByDateBetweenEarlyAndLater(simpleDateFormat.parse(early),
+            simpleDateFormat.parse(later)));
   }
 }
