@@ -1,12 +1,14 @@
 package com.komarov.onedrive.controller;
 
-import com.google.common.net.HttpHeaders;
 import com.komarov.onedrive.dao.entity.FileEntity;
 import com.komarov.onedrive.services.FileEntityService;
+import com.komarov.onedrive.services.dto.entity.DownloadFile;
 import com.komarov.onedrive.services.dto.entity.FileEntityDTO;
-import java.util.Arrays;
+import com.komarov.onedrive.services.dto.entity.FileLists;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +20,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 public class FileController {
@@ -32,28 +33,36 @@ public class FileController {
   }
 
   @PostMapping("/files")
-  public ResponseEntity addFiles(@RequestBody MultipartFile[] files,
-      @RequestParam(name = "personId") long personId) {
+  public ResponseEntity<List<FileEntityDTO>> addFiles(
+      @RequestParam(name = "personId") long personId,
+      @RequestBody FileLists fileLists) {
     LOG.info("Add files");
-    List<FileEntityDTO> dtos = Arrays.stream(files)
-        .map(file -> fileEntityService.addFile(file, personId))
-        .collect(Collectors.toList());
+    List<FileEntityDTO> dtos = new ArrayList<>();
+    for (int i = 0; i < fileLists.getFileNames().size(); i++) {
+      dtos.add(
+          fileEntityService.addFile(
+              new FileEntityDTO(fileLists.getFileNames().get(i), fileLists.getSizes().get(i),
+                  new Date()),
+              ArrayUtils.toPrimitive(fileLists.getBodies().get(i)), personId,
+              fileLists.getContentTypes().get(0)));
+    }
     return ResponseEntity.ok(dtos);
   }
 
   @GetMapping("/files/{fileId}")
-  public ResponseEntity downloadFile(@PathVariable long fileId) {
-    FileEntity fileEntity = fileEntityService.findFileById(fileId);
-    return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-        "attachment; filename=\"" + fileEntity.getName()).body(fileEntity.getFile());
+  public ResponseEntity<DownloadFile> downloadFile(@PathVariable long fileId,
+      @RequestParam(name = "personId") long personId) {
+    FileEntity fileEntity = fileEntityService.findFileById(fileId, personId);
+    return ResponseEntity.ok().body(
+        new DownloadFile(fileEntity.getName(), fileEntity.getFile(), fileEntity.getFileType()));
   }
 
-  @PostMapping("/single_file")
-  public ResponseEntity addSingleFile(@RequestBody MultipartFile file,
-      @RequestParam(name = "personId") long personId) {
-    LOG.info("Add single file");
-    return ResponseEntity.ok(fileEntityService.addFile(file, personId));
-  }
+//  @PostMapping("/single_file")
+//  public ResponseEntity<FileEntityDTO> addSingleFile(@RequestBody FileEntityDTO dto, @RequestBody byte[] body,
+//      @RequestParam(name = "personId") long personId) {
+//    LOG.info("Add single file with name {} and person ID {}", dto.getFileName(), personId);
+//    return ResponseEntity.ok(fileEntityService.addFile(file, personId));
+//  }
 
   @GetMapping("/files")
   public ResponseEntity<List<FileEntityDTO>> findFile(
@@ -67,9 +76,10 @@ public class FileController {
   }
 
   @DeleteMapping("/files/{fileId}")
-  public void deleteFileById(@PathVariable long fileId) {
+  public void deleteFileById(@PathVariable long fileId,
+      @RequestParam(name = "personId") long personId) {
     LOG.info("Delete file with ID: " + fileId);
-    fileEntityService.deleteFileById(fileId);
+    fileEntityService.deleteFileById(fileId, personId);
   }
 
 }

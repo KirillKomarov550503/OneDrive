@@ -34,6 +34,13 @@ public class FileEntity {
   public FileEntity() {
   }
 
+  public FileEntity(byte[] file, String name, long size, long personId) {
+    this.file = file;
+    this.name = name;
+    this.size = size;
+    this.personId = personId;
+  }
+
   public FileEntity(byte[] file, String name, long size, long personId, String fileType,
       Date date) {
     this.file = file;

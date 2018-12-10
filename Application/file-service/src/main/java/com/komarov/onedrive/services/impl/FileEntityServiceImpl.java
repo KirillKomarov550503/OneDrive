@@ -5,24 +5,21 @@ import com.komarov.onedrive.dao.repository.FileEntityRepository;
 import com.komarov.onedrive.services.FileEntityService;
 import com.komarov.onedrive.services.dto.converter.FileEntityConverter;
 import com.komarov.onedrive.services.dto.entity.FileEntityDTO;
+import com.komarov.onedrive.services.exception.ForbiddenException;
 import com.komarov.onedrive.services.exception.NotFoundException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class FileEntityServiceImpl implements FileEntityService {
@@ -42,24 +39,18 @@ public class FileEntityServiceImpl implements FileEntityService {
     return entityList.stream().map(fileEntityConverter::convertToDTO).collect(Collectors.toList());
   }
 
+  @Transactional
   @Override
-  public FileEntityDTO addFile(MultipartFile multipartFile, long personId)
-      throws NotFoundException {
+  public FileEntityDTO addFile(FileEntityDTO dto, byte[] body, long personId, String type) {
     FileEntity fileEntity = new FileEntity();
-    LOG.info("Get bytes");
-    Stream.of(fileEntity.getFile()).forEach(System.err::println);
-    fileEntity.setFileType(multipartFile.getContentType());
-    try {
-      fileEntity.setFile(multipartFile.getBytes());
-    } catch (IOException e) {
-      LOG.error("IOException: " + e.getMessage());
-    }
-    fileEntity.setName(StringUtils.cleanPath(multipartFile.getOriginalFilename()));
-    fileEntity.setSize(multipartFile.getSize());
+    fileEntity.setFile(body);
+    fileEntity.setName(StringUtils.cleanPath(dto.getFileName()));
+    fileEntity.setSize(dto.getSize());
     fileEntity.setPersonId(personId);
     fileEntity.setDate(new Date());
+    fileEntity.setFileType(type);
     LOG.info(
-        "Add file with name \"" + multipartFile.getName() + "\" for person with ID: " + personId);
+        "Add file with name \"" + dto.getFileName() + "\" for person with ID: " + personId);
     return fileEntityConverter.convertToDTO(fileEntityRepository.save(fileEntity));
   }
 
@@ -74,22 +65,33 @@ public class FileEntityServiceImpl implements FileEntityService {
   }
 
   @Override
-  public FileEntity findFileById(long id) throws NotFoundException {
+  public FileEntity findFileById(long id, long personId) {
     LOG.info("Find file by id: " + id);
     Optional<FileEntity> optionalFileEntity = fileEntityRepository.findById(id);
     if (!optionalFileEntity.isPresent()) {
       throw new NotFoundException(String.format("File with id %s not found", id));
     }
+    if (optionalFileEntity.get().getPersonId() != personId) {
+      String error = "Attempt to access someone else's resource";
+      LOG.error(error);
+      throw new ForbiddenException(error);
+    }
     return optionalFileEntity.get();
   }
 
+  @Transactional
   @Override
-  public void deleteFileById(long id) throws NotFoundException {
+  public void deleteFileById(long id, long personId) {
     Optional<FileEntity> optionalFile = fileEntityRepository.findById(id);
     if (!optionalFile.isPresent()) {
       String error = String.format("File with id %d not found", id);
       LOG.error(error);
       throw new NotFoundException(error);
+    }
+    if (optionalFile.get().getPersonId() != personId) {
+      String error = "Attempt to access someone else's resource";
+      LOG.error(error);
+      throw new ForbiddenException(error);
     }
     fileEntityRepository.deleteById(id);
   }
@@ -100,8 +102,9 @@ public class FileEntityServiceImpl implements FileEntityService {
     return files.stream().mapToLong(FileEntity::getSize).average().orElse(0);
   }
 
+  @Transactional
   @Override
-  public List<FileEntityDTO> findFilesByPersonId(long personId) throws NotFoundException {
+  public List<FileEntityDTO> findFilesByPersonId(long personId) {
     LOG.info("Find files by person ID: " + personId);
     return convertEntityListToDtoList(fileEntityRepository.findFileEntitiesByPersonId(personId));
   }
