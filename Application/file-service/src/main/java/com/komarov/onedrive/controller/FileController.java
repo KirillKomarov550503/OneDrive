@@ -76,7 +76,8 @@ public class FileController {
   }
 
   @GetMapping("/statistics/files/average")
-  public ResponseEntity<Double> getAverageSize(@RequestParam(name = "personId", required = false) Long personId) {
+  public ResponseEntity<Double> getAverageSize(
+      @RequestParam(name = "personId", required = false) Long personId) {
     LOG.info("Get average Size");
     if (personId == null) {
       return ResponseEntity.ok().body(fileEntityService.findAverageFileSize());
@@ -86,7 +87,8 @@ public class FileController {
   }
 
   @GetMapping("/statistics/files/general")
-  public ResponseEntity<Long> getGeneralSize(@RequestParam(name = "personId", required = false) Long personId) {
+  public ResponseEntity<Long> getGeneralSize(
+      @RequestParam(name = "personId", required = false) Long personId) {
     LOG.info("Get general size");
     if (personId == null) {
       return ResponseEntity.ok().body(fileEntityService.findGeneralFileSizeSum());
