@@ -6,24 +6,20 @@ import com.komarov.onedrive.dto.FileLists;
 import com.komarov.onedrive.feign.FileClient;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class FileController extends BaseController {
@@ -36,20 +32,17 @@ public class FileController extends BaseController {
     this.fileClient = fileClient;
   }
 
-  @PostMapping(value = "/users/single_file")
-  public ResponseEntity<List<FileEntityDTO>> uploadSingleFile(@RequestBody MultipartFile file) {
 
-    long personId = getCustomUser().getId();
-    LOG.info("Add file with name {} for person with ID {}", file.getOriginalFilename(), personId);
-    return fileClient.addFiles(personId,
-        new FileLists(Collections.singletonList(StringUtils.cleanPath(file.getOriginalFilename())),
-            Collections.singletonList(file.getSize()), Collections.singletonList(convert(file)),
-            Collections.singletonList(file.getContentType())));
+  @GetMapping(value = "/users/files/add")
+  public ModelAndView showAddPage(ModelAndView modelAndView) {
+    modelAndView.setViewName("add");
+    modelAndView.addObject("fileList", fileClient.findAddFiles(getCustomUser().getId()).getBody());
+    return modelAndView;
   }
 
-  @PostMapping(value = "/users/files")
-  public ResponseEntity<List<FileEntityDTO>> addFiles(@RequestBody MultipartFile[] files) {
-    Map<FileEntityDTO, Byte[]> fileMap = new HashMap<>();
+  @PostMapping(value = "/users/files/add")
+  public ModelAndView addFiles(@RequestParam(name = "files") MultipartFile[] files,
+      ModelAndView modelAndView) {
     List<String> fileNames = new ArrayList<>();
     List<Long> sizes = new ArrayList<>();
     List<Byte[]> bodies = new ArrayList<>();
@@ -60,8 +53,56 @@ public class FileController extends BaseController {
       bodies.add(convert(file));
       contentTypes.add(file.getContentType());
     }
-    return fileClient
+    fileClient
         .addFiles(getCustomUser().getId(), new FileLists(fileNames, sizes, bodies, contentTypes));
+    modelAndView.addObject("fileList", fileClient.findAddFiles(getCustomUser().getId()).getBody());
+    modelAndView.setViewName("add");
+    return modelAndView;
+  }
+
+  @GetMapping(value = "/users/files/downloadPage")
+  public ModelAndView showDownloadPage(ModelAndView modelAndView) {
+    modelAndView.setViewName("download");
+    modelAndView.addObject("fileList", fileClient.findAddFiles(getCustomUser().getId()).getBody());
+    return modelAndView;
+  }
+
+  @GetMapping(value = "/users/files/download")
+  public ResponseEntity downloadFile(@RequestParam(name = "id") Long fileId) {
+    ResponseEntity<DownloadFile> responseEntity = fileClient
+        .downloadFile(fileId, getCustomUser().getId());
+    DownloadFile file = responseEntity.getBody();
+    return ResponseEntity.ok()
+        .contentType(MediaType.parseMediaType(file.getContentType()))
+        .header(HttpHeaders.CONTENT_DISPOSITION,
+            "attachment; filename=\"" + file.getFileName()).body(file.getBytes());
+
+  }
+
+  @GetMapping(value = "/users/files")
+  public ModelAndView findFile(ModelAndView modelAndView) {
+    LOG.info("Person ID: " + getCustomUser().getId());
+    List<FileEntityDTO> fileList = fileClient.findAddFiles(getCustomUser().getId()).getBody();
+    modelAndView.setViewName("look");
+    modelAndView.addObject("fileList", fileList);
+    return modelAndView;
+  }
+
+  @GetMapping(value = "/users/files/deletePage")
+  public ModelAndView showDeleteDelete(ModelAndView modelAndView) {
+    modelAndView.setViewName("remove");
+    modelAndView.addObject("fileList", fileClient.findAddFiles(getCustomUser().getId()).getBody());
+    return modelAndView;
+  }
+
+  @GetMapping(value = "/users/files/delete")
+  public ModelAndView deleteFile(@RequestParam(name = "id") long fileId,
+      ModelAndView modelAndView) {
+    LOG.info("Delete file with id: " + fileId);
+    fileClient.deleteFileById(fileId, getCustomUser().getId());
+    modelAndView.addObject("fileList", fileClient.findAddFiles(getCustomUser().getId()).getBody());
+    modelAndView.setViewName("remove");
+    return modelAndView;
   }
 
   private Byte[] convert(MultipartFile file) {
@@ -76,29 +117,5 @@ public class FileController extends BaseController {
       LOG.error("IOException");
     }
     return bytes;
-  }
-
-  @GetMapping(value = "/users/files/{fileId}")
-  public ResponseEntity downloadFile(@PathVariable long fileId) {
-    ResponseEntity<DownloadFile> responseEntity = fileClient
-        .downloadFile(fileId, getCustomUser().getId());
-    DownloadFile file = responseEntity.getBody();
-    return ResponseEntity.ok()
-        .contentType(MediaType.parseMediaType(file.getContentType()))
-        .header(HttpHeaders.CONTENT_DISPOSITION,
-            "attachment; filename=\"" + file.getFileName()).body(file.getBytes());
-
-  }
-
-  @GetMapping(value = "/users/files")
-  public ResponseEntity findFile(/*@RequestParam(name = "personId", required = false) Long personId*/) {
-    LOG.info("Person ID: " + getCustomUser().getId());
-    return fileClient.findAddFiles(getCustomUser().getId());
-  }
-
-  @DeleteMapping(value = "/users/files/[fileId}")
-  public void deleteFile(@PathVariable long fileId) {
-    LOG.info("Delete file with id: " + fileId);
-    fileClient.deleteFileById(fileId, getCustomUser().getId());
   }
 }

@@ -1,0 +1,55 @@
+table {
+  border-collapse: collapse;
+}
+
+td {
+  padding: 20px;
+  margin: 10px;
+  border: none;
+  text-align: center;
+
+}
+
+tr:hover {
+  background-color: lightgray;
+}
+
+#table_list {
+  position: absolute;
+  right: 0;
+  width: 60%;
+  margin: 0 auto;
+  padding: 100px;
+  color: black;
+  height: 100%;
+}
+
+aside.menu {
+  position: absolute;
+  left: 0;
+  width: 20%;
+  border: none;
+  height: 50%;
+}
+
+aside ul {
+  padding: 20px;
+  margin: 20px;
+  list-style-type: none;
+}
+
+aside ul li {
+  border: solid black 3px;
+  padding: 10px;
+  margin: 20px;
+  text-align: center;
+}
+
+aside ul li a{
+  text-decoration: none;
+}
+
+aside ul li:hover {
+  background-color: lightgray;
+}
+

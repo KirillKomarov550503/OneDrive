@@ -2,6 +2,8 @@ package com.komarov.onedrive.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,11 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
 @ComponentScan("com.komarov.onedrive")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
   private static final String PREFIX = "/one-drive";
   @Autowired
   @Qualifier("customUserDetails")
@@ -29,6 +33,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     auth.userDetailsService(userDetailsService).passwordEncoder(customPasswordEncoder);
   }
 
+  @Autowired
+  private CustomLogoutSuccessHandler logoutSuccessHandler;
+
+
+
   @Override
   protected void configure(HttpSecurity http) throws Exception {
     http
@@ -40,6 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .httpBasic()
         .and()
         .logout()
+        .clearAuthentication(true)
+        .logoutUrl("/one-drive/logout")
+        .logoutSuccessUrl("/")
+        .invalidateHttpSession(true)
+        .deleteCookies("JSESSIONID")
+        .logoutSuccessHandler(logoutSuccessHandler)
         .and()
         .sessionManagement()
         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

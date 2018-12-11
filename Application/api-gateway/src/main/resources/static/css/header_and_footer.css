@@ -1,0 +1,93 @@
+
+body{
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+header h1{
+  font: 700 3em Arial, sans-serif;
+  color: rgb(200, 100, 50);
+  text-align: center;
+  text-transform: uppercase;
+
+}
+
+nav ul{
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+nav li{
+  display: inline;
+  margin: 5px;
+  padding: 5px;
+}
+
+nav a:hover{
+  background-color: orange;
+  -webkit-transform: scale(1.2);
+  trasform: scale(1.2);
+
+}
+
+nav a {
+  display: inline-block;
+  padding: 9px 20px 5px 20px;
+  border-radius: 20px;
+  text-decoration: none;
+  background-color: whitesmoke;
+
+  -webkit-transition: -webkit-transoform 0.5s, background-color 0.0s ease-in 0.5s;
+  transition: transform 0.5s, background-color 0.5s ease-in 0.0s;
+}
+
+
+
+header {
+  background: -webkit-linear-gradient(top, rgba(100,100,100,1), rgba(200, 200, 200, 0.5));
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px 0 0 10px;
+  height: 120px;
+}
+
+
+header  .emblem{
+  position: absolute;
+  top: 0px;
+  left: 100px;
+
+  border: none;
+
+}
+
+
+header nav{
+  position: absolute;
+  right: 0;
+  top: 45px;
+}
+
+
+
+
+
+
+footer .copyright{
+  font-family: Arial, sans-serif;
+  font-weight: 200;
+  color: aliceblue;
+  margin: 0 auto;
+  max-width: 100%;
+}
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  background-color: #35008b;
+}
+
