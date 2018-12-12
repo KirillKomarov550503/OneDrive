@@ -24,6 +24,7 @@ public class PersonConverter implements Converter<PersonDTO, Person> {
     PersonDTO dto = new PersonDTO(person.getId(), person.getName(), person.getSurname(),
         person.getEmail(), person.getDate());
     dto.setRole(person.getRole());
+    dto.setPassword(person.getPassword());
     return dto;
   }
 }
