@@ -24,32 +24,35 @@
     </aside>
 </div>
 <div id="table_list">
-    <form method="get" action="/one-drive/statistics/users">
-        <label class="label" name="early">Введите нижнюю границу</label>
-        <input type="text" name="early"/>
-        <label class="label" name="later">Введите верхнюю границу</label>
-        <input type="text" name="later"/>
-        <input type="submit" value="Получить статистику"/>
-    </form>
+    <table>
+        <tr class="custom_title">
+            <th>Общий объем файлов для всех пользователей</th>
+            <th>Средний объем файлов для всех пользователей</th>
+        </tr>
+        <tr>
+            <td><c:out value="${generalFileStatistic}"/> </td>
+            <td><c:out value="${averageFileStatistic}"/> </td>
+        </tr>
+    </table>
+    <p>
 
-    <c:if test="${get == 'yes'}">
-        <table>
-            <tr class="custom_title">
-                <th>Имя</th>
-                <th>Фамилия</th>
-                <th>Email</th>
-                <th>Дата регистрации</th>
+
+
+    </p>
+    <table>
+        <tr class="custom_title">
+            <th>Email</th>
+            <th>Общий объем файлов, МБ</th>
+            <th>Средний объем файлов, МБ</th>
+        </tr>
+        <c:forEach var="statistic" items="${userFileStatistic}">
+            <tr>
+                <td><c:out value="${statistic.email}"/></td>
+                <td><c:out value="${statistic.generalSize}"/></td>
+                <td><c:out value="${statistic.averageSize}"/></td>
             </tr>
-            <c:forEach var="person" items="${peopleList}">
-                <tr>
-                    <td><c:out value="${person.name}"/></td>
-                    <td><c:out value="${person.surname}"/></td>
-                    <td><c:out value="${person.email}"/></td>
-                    <td><c:out value="${person.date}"/> </td>
-                </tr>
-            </c:forEach>
-        </table>
-    </c:if>
+        </c:forEach>
+    </table>
 </div>
 <footer>
     <div class="copyright">

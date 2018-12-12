@@ -1,9 +1,12 @@
 package com.komarov.onedrive.controller;
 
+import com.komarov.onedrive.dto.PersonDTO;
+import com.komarov.onedrive.dto.StatisticFileDTO;
 import com.komarov.onedrive.exception.LogicException;
 import com.komarov.onedrive.feign.StatisticClient;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,7 +35,8 @@ public class StatisticController extends BaseController {
     modelAndView.getModel().put("get", "yes");
     modelAndView.setViewName("user_statistic");
     if ((early == null && later == null) || ("".equals(early) && "".equals(later))) {
-      modelAndView.addObject("peopleList", statisticClient.getAllPeople().getBody());
+      List<PersonDTO> dtos = statisticClient.getAllPeople().getBody();
+      modelAndView.addObject("peopleList", dtos);
       return modelAndView;
     } else if ((early == null || later == null) || ("".equals(early) || "".equals(later))) {
       throw new LogicException("Set early and later request parameters");
@@ -43,15 +47,28 @@ public class StatisticController extends BaseController {
     }
   }
 
-  @GetMapping("/statistics/files/average")
-  public ResponseEntity<Double> getAverageSize(
-      @RequestParam(name = "personId", required = false) Long personId) {
-    return statisticClient.getAverageSize(personId);
+  @GetMapping("/statistics/files")
+  public ModelAndView showFileStatisticPage(ModelAndView modelAndView) {
+    modelAndView.setViewName("file_statistic");
+    List<StatisticFileDTO> dtoList = statisticClient.getAllPeople().getBody()
+        .stream()
+        .map(personDTO -> new StatisticFileDTO(personDTO.getEmail(),
+            statisticClient.getAverageSize(personDTO.getId()).getBody(),
+            statisticClient.getGeneralSize(personDTO.getId()).getBody()))
+        .collect(Collectors.toList());
+    modelAndView.addObject("userFileStatistic", dtoList);
+    modelAndView.addObject("generalFileStatistic",
+        convertLongBytesToMegaBytes(statisticClient.getGeneralSize(null).getBody()));
+    modelAndView.addObject("averageFileStatistic",
+        convertDoubleBytesToMegaBytes(statisticClient.getAverageSize(null).getBody()));
+    modelAndView.setViewName("file_statistic");
+    return modelAndView;
   }
 
-  @GetMapping("/statistics/files/general")
-  public ResponseEntity<Long> getGeneralSize(
-      @RequestParam(name = "personId", required = false) Long personId) {
-    return statisticClient.getGeneralSize(personId);
+  private Double convertDoubleBytesToMegaBytes(Double number){
+    return number / 1024.0 / 1024.0;
+  }
+  private Double convertLongBytesToMegaBytes(Long number) {
+    return number / 1024.0 / 1024.0;
   }
 }
