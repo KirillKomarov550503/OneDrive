@@ -14,13 +14,13 @@ public interface FileEntityService {
 
   void deleteFileById(long id, long personId);
 
-  double findAverageFileSize();
+  Double findAverageFileSize();
 
-  double findAverageFileSizeByPersonId(long personId);
+  Double findAverageFileSizeByPersonId(long personId);
 
-  long findGeneralFileSizeSum();
+  Long findGeneralFileSizeSum();
 
-  long findGeneralFileSizeSumByPersonId(long personId);
+  Long findGeneralFileSizeSumByPersonId(long personId);
 
   List<FileEntityDTO> findAllFiles();
 

@@ -109,25 +109,25 @@ public class FileEntityServiceImpl implements FileEntityService {
   }
 
   @Override
-  public double findAverageFileSize() {
+  public Double findAverageFileSize() {
     LOG.info("Calculate average files size");
     return fileEntityRepository.findAverageFileSize();
   }
 
   @Override
-  public double findAverageFileSizeByPersonId(long personId) {
+  public Double findAverageFileSizeByPersonId(long personId) {
     LOG.info("Calculate average files size for person with ID {}", personId);
     return fileEntityRepository.findAverageFileSizeByPersonId(personId);
   }
 
   @Override
-  public long findGeneralFileSizeSum() {
+  public Long findGeneralFileSizeSum() {
     LOG.info("Calculate general files size");
     return fileEntityRepository.findGeneralFileSizeSum();
   }
 
   @Override
-  public long findGeneralFileSizeSumByPersonId(long personId) {
+  public Long findGeneralFileSizeSumByPersonId(long personId) {
     LOG.info("Calculate general files size for person with ID {}", personId);
     return fileEntityRepository.findGeneralFileSizeSumByPersonId(personId);
   }

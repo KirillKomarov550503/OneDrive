@@ -79,21 +79,27 @@ public class FileController {
   public ResponseEntity<Double> getAverageSize(
       @RequestParam(name = "personId", required = false) Long personId) {
     LOG.info("Get average Size");
+    Double size = null;
     if (personId == null) {
-      return ResponseEntity.ok().body(fileEntityService.findAverageFileSize());
+      size = ResponseEntity.ok().body(fileEntityService.findAverageFileSize()).getBody();
     } else {
-      return ResponseEntity.ok().body(fileEntityService.findAverageFileSizeByPersonId(personId));
+      size = ResponseEntity.ok().body(fileEntityService.findAverageFileSizeByPersonId(personId))
+          .getBody();
     }
+    return ResponseEntity.ok(size == null ? 0.0 : size);
   }
 
   @GetMapping("/statistics/files/general")
   public ResponseEntity<Long> getGeneralSize(
       @RequestParam(name = "personId", required = false) Long personId) {
+    Long size = null;
     LOG.info("Get general size");
     if (personId == null) {
-      return ResponseEntity.ok().body(fileEntityService.findGeneralFileSizeSum());
+      size = ResponseEntity.ok().body(fileEntityService.findGeneralFileSizeSum()).getBody();
     } else {
-      return ResponseEntity.ok().body(fileEntityService.findGeneralFileSizeSumByPersonId(personId));
+      size = ResponseEntity.ok().body(fileEntityService.findGeneralFileSizeSumByPersonId(personId))
+          .getBody();
     }
+    return ResponseEntity.ok(size == null ? 0 : size);
   }
 }

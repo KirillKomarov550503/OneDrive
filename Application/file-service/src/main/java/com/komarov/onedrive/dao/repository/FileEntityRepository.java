@@ -13,14 +13,14 @@ public interface FileEntityRepository extends JpaRepository<FileEntity, Long> {
   List<FileEntity> findFileEntitiesByPersonId(long personId);
 
   @Query("select avg(fe.size) from FileEntity fe")
-  double findAverageFileSize();
+  Double findAverageFileSize();
 
   @Query("select avg(fe.size) from FileEntity fe where fe.personId = :personId")
-  double findAverageFileSizeByPersonId(@Param("personId") long personId);
+  Double findAverageFileSizeByPersonId(@Param("personId") long personId);
 
   @Query("select sum(fe.size) from FileEntity fe")
-  long findGeneralFileSizeSum();
+  Long findGeneralFileSizeSum();
 
   @Query("select sum(fe.size) from FileEntity fe where fe.personId = :personId")
-  long findGeneralFileSizeSumByPersonId(@Param("personId") long personId);
+  Long findGeneralFileSizeSumByPersonId(@Param("personId") long personId);
 }
