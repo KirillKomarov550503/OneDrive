@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 @RestController
 public class StatisticController extends BaseController {
@@ -18,15 +19,27 @@ public class StatisticController extends BaseController {
     this.statisticClient = statisticClient;
   }
 
+  @GetMapping(value = "/statistics")
+  public ModelAndView getUserStatisticPage(ModelAndView modelAndView) {
+    modelAndView.addObject("get", "no");
+    modelAndView.setViewName("user_statistic");
+    return modelAndView;
+  }
+
   @GetMapping(value = "/statistics/users")
-  public ResponseEntity getAllPeople(@RequestParam(name = "early", required = false) String early,
-      @RequestParam(name = "later", required = false) String later) {
-    if (early == null && later == null) {
-      return statisticClient.getAllPeople();
-    } else if (early == null || later == null) {
+  public ModelAndView getAllPeople(@RequestParam(name = "early", required = false) String early,
+      @RequestParam(name = "later", required = false) String later, ModelAndView modelAndView) {
+    modelAndView.getModel().put("get", "yes");
+    modelAndView.setViewName("user_statistic");
+    if ((early == null && later == null) || ("".equals(early) && "".equals(later))) {
+      modelAndView.addObject("peopleList", statisticClient.getAllPeople().getBody());
+      return modelAndView;
+    } else if ((early == null || later == null) || ("".equals(early) || "".equals(later))) {
       throw new LogicException("Set early and later request parameters");
     } else {
-      return statisticClient.getPeopleByTimeRegistrationBorder(early, later);
+      modelAndView.addObject("peopleList",
+          statisticClient.getPeopleByTimeRegistrationBorder(early, later).getBody());
+      return modelAndView;
     }
   }
 

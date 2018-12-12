@@ -45,7 +45,7 @@ aside ul li {
   text-align: center;
 }
 
-aside ul li a{
+aside ul li a {
   text-decoration: none;
 }
 
@@ -53,3 +53,46 @@ aside ul li:hover {
   background-color: lightgray;
 }
 
+
+table {
+  font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+  border-collapse: collapse;
+  color: #686461;
+}
+
+th {
+  border-bottom: 3px solid #B9B29F;
+  padding: 10px;
+  text-align: left;
+}
+
+caption {
+  padding: 10px;
+  color: white;
+  background: #8FD4C1;
+  font-size: 18px;
+  text-align: left;
+  font-weight: bold;
+}
+
+td {
+  padding: 10px;
+}
+
+tr:nth-child(odd) {
+  background: white;
+}
+
+tr:nth-child(even) {
+  background: #E8E6D1;
+}
+
+tr.custom_title {
+  border-top: 1px solid #777777;
+  border-bottom: 1px solid #777777;
+  box-shadow: inset 0 1px 0 #999999, inset 0 -1px 0 #999999;
+  background: linear-gradient(#9595b6, #5a567f);
+  color: white;
+  padding: 10px 15px;
+  position: relative;
+}

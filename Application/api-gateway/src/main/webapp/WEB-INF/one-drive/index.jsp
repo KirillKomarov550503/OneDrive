@@ -16,7 +16,7 @@
     <nav>
         <ul>
             <li><a href="/one-drive/registration">Регистрация</a></li>
-            <li><a href="/one-drive/users/files">Авторизация</a></li>
+            <li><a href="/one-drive/login">Авторизация</a></li>
         </ul>
     </nav>
 </header>

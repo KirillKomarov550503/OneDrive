@@ -3,19 +3,11 @@ package com.komarov.onedrive.controller;
 import com.komarov.onedrive.dto.PersonDTO;
 import com.komarov.onedrive.feign.FileClient;
 import com.komarov.onedrive.feign.PersonClient;
-import java.net.URISyntaxException;
-import java.util.Enumeration;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+import com.komarov.onedrive.security.Role;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -55,6 +47,19 @@ public class PersonController extends BaseController {
     personClient.savePerson(personDTO).getBody();
 
     return modelAndView;
+  }
+
+  @GetMapping("/login")
+  public ModelAndView login(ModelAndView modelAndView){
+    if(Role.USER.equals(getCustomUser().getRole())){
+      modelAndView.addObject("attribute", "redirectWithRedirectPrefix");
+      modelAndView.setViewName("redirect:/one-drive/users/files");
+      return modelAndView;
+    } else {
+      modelAndView.addObject("attribute", "redirectWithRedirectPrefix");
+      modelAndView.setViewName("redirect:/one-drive/statistics");
+      return modelAndView;
+    }
   }
 
   @PutMapping("/users")
