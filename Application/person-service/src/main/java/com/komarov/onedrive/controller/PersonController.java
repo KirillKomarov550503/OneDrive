@@ -58,7 +58,6 @@ public class PersonController {
 
   @GetMapping("/statistics/people")
   public ResponseEntity<List<PersonDTO>> getAllPeople() {
-    System.err.println("Get all PEople");
     return ResponseEntity.ok(personService.findAll());
   }
 
@@ -67,7 +66,6 @@ public class PersonController {
       @RequestParam(name = "early") String early,
       @RequestParam(name = "later") String later) throws ParseException {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    System.err.println("GetPeopleByTimeRegistrationBorder");
     return ResponseEntity.ok(personService
         .findPeopleByDateBetweenEarlyAndLater(simpleDateFormat.parse(early),
             simpleDateFormat.parse(later)));

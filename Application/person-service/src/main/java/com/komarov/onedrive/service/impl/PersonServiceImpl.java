@@ -96,7 +96,7 @@ public class PersonServiceImpl implements PersonService {
 
   @Override
   public List<PersonDTO> findAll() {
-    return convertPersonListToDtoList(personRepository.findAll());
+    return convertPersonListToDtoList(personRepository.findPeopleByRole(Role.USER));
   }
 
   @Transactional
