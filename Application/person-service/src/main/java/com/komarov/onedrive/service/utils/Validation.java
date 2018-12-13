@@ -22,4 +22,22 @@ public class Validation {
       throw new LogicException(error);
     }
   }
+
+  public static void validateEmail(String email) throws LogicException {
+    Pattern pattern = Pattern.compile("^[0-9a-z.]{6,30}@[a-z]{3,10}.[a-z]{2,3}$");
+    if (!pattern.matcher(email).matches()) {
+      String error = "Wrong input format of email";
+      LOG.error(error);
+      throw new LogicException(error);
+    }
+  }
+
+  public static void validatePassword(String password) throws LogicException {
+    Pattern pattern = Pattern.compile("^[0-9a-zA-Z]{6,20}$");
+    if (!pattern.matcher(password).matches()) {
+      String error = "Wrong input format of password";
+      LOG.error(error);
+      throw new LogicException(error);
+    }
+  }
 }

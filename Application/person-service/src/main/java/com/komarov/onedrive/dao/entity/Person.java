@@ -100,8 +100,7 @@ public class Person {
       return false;
     }
     Person person = (Person) o;
-    return id == person.id &&
-        Objects.equals(name, person.name) &&
+    return Objects.equals(name, person.name) &&
         Objects.equals(surname, person.surname) &&
         role == person.role &&
         Objects.equals(email, person.email) &&
@@ -111,7 +110,7 @@ public class Person {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, name, surname, role, email, password, date);
+    return Objects.hash(name, surname, role, email, password, date);
   }
 
   @Override

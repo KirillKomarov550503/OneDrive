@@ -49,6 +49,8 @@ public class PersonServiceImpl implements PersonService {
   @Override
   public PersonDTO register(PersonDTO personDTO, Role role) throws LogicException {
     Validation.validateNameAndSurname(personDTO.getName(), personDTO.getSurname());
+    Validation.validateEmail(personDTO.getEmail());
+    Validation.validatePassword(personDTO.getPassword());
     Person person = personConverter.convertToEntity(personDTO);
     if (personRepository.findPersonByEmail(personDTO.getEmail()) != null) {
       String error = "User with this email already exist";
@@ -67,6 +69,8 @@ public class PersonServiceImpl implements PersonService {
   @Override
   public PersonDTO update(PersonDTO personDTO) throws LogicException, NotFoundException {
     Validation.validateNameAndSurname(personDTO.getName(), personDTO.getSurname());
+    Validation.validateEmail(personDTO.getEmail());
+    Validation.validatePassword(personDTO.getPassword());
     Optional<Person> dbPerson = personRepository.findById(personDTO.getId());
     if (!dbPerson.isPresent()) {
       String error = "Not found person with ID: " + personDTO.getId();
